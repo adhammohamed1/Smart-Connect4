@@ -1,0 +1,20 @@
+# Color Values
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+LIGHT_GREY = (170, 170, 170)
+GREY = (85, 85, 85)
+DARK_GREY = (50, 50, 50)
+DARKER_GREY = (35, 35, 35)
+
+RED = (230, 30, 30)
+DARK_RED = (150, 0, 0)
+
+GREEN = (30, 230, 30)
+DARK_GREEN = (0, 125, 0)
+
+CYAN = (30, 230, 230)
+BLUE = (30, 30, 122)
+
+GOLD = (225, 185, 0)
+DARK_GOLD = (165, 125, 0)
