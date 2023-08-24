@@ -19,17 +19,6 @@ import engine
 win = tk.Tk()
 win.withdraw()
 
-#   Board Coordinates   #
-BOARD_BEGIN_X = 30
-BOARD_BEGIN_Y = wc.SQUARE_SIZE
-BOARD_END_X = BOARD_BEGIN_X + (wc.COLUMN_COUNT * wc.SQUARE_SIZE)
-BOARD_END_Y = BOARD_BEGIN_Y + (wc.ROW_COUNT * wc.SQUARE_SIZE)
-
-BOARD_LAYOUT_END_X = BOARD_END_X + 2 * BOARD_BEGIN_X
-
-#   Board Dimensions    #
-BOARD_WIDTH = BOARD_BEGIN_X + wc.COLUMN_COUNT * wc.SQUARE_SIZE
-BOARD_LENGTH = wc.ROW_COUNT * wc.SQUARE_SIZE
 
 #   Player Variables    #
 PIECE_COLORS = (colors.GREY, colors.RED, colors.GREEN)
@@ -98,36 +87,36 @@ class GameWindow:
         """
         titleFont = pygame.font.SysFont("Sans Serif", 40, False, True)
         mainLabel = titleFont.render("Smart Connect4", True, colors.WHITE)
-        screen.blit(mainLabel, (BOARD_LAYOUT_END_X + 20, 20))
+        screen.blit(mainLabel, (wc.BOARD_FRAME_END_X + 20, 20))
 
         if not GAME_OVER:
             captionFont = pygame.font.SysFont("Arial", 15)
             player1ScoreCaption = captionFont.render("Player1", True, colors.BLACK)
             player2ScoreCaption = captionFont.render("Player2", True, colors.BLACK)
-            screen.blit(player1ScoreCaption, (BOARD_LAYOUT_END_X + 48, 210))
-            screen.blit(player2ScoreCaption, (BOARD_LAYOUT_END_X + 170, 210))
+            screen.blit(player1ScoreCaption, (wc.BOARD_FRAME_END_X + 48, 210))
+            screen.blit(player2ScoreCaption, (wc.BOARD_FRAME_END_X + 170, 210))
 
             if GAME_MODE == SINGLE_PLAYER:
                 global statsPanelY
                 depthFont = pygame.font.SysFont("Serif", math.ceil(23 - len(str(engine.BOARD.getDepth())) / 4))
                 depthLabel = depthFont.render("k = " + str(engine.BOARD.getDepth()), True, colors.BLACK)
 
-                tempWidth = wc.WIDTH - (BOARD_LAYOUT_END_X + 10)
-                centerX = BOARD_LAYOUT_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
+                tempWidth = wc.WINDOW_WIDTH - (wc.BOARD_FRAME_END_X + 10)
+                centerX = wc.BOARD_FRAME_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
                 screen.blit(depthLabel, (centerX, 294))
                 statsPanelY = 320
 
                 if usePruning:
                     depthFont = pygame.font.SysFont("Arial", 16)
                     depthLabel = depthFont.render("Using alpha-beta pruning", True, colors.GOLD)
-                    centerX = BOARD_LAYOUT_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
+                    centerX = wc.BOARD_FRAME_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
                     screen.blit(depthLabel, (centerX, 320))
                     statsPanelY += 20
 
                 if useTranspositionTable:
                     depthFont = pygame.font.SysFont("Arial", 16)
                     depthLabel = depthFont.render("Using transposition table", True, colors.DARK_GREEN)
-                    centerX = BOARD_LAYOUT_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
+                    centerX = wc.BOARD_FRAME_END_X + 10 + (tempWidth / 2 - depthLabel.get_width() / 2)
                     screen.blit(depthLabel, (centerX, statsPanelY))
                     statsPanelY += 20
 
@@ -141,7 +130,7 @@ class GameWindow:
 
             verdictFont = pygame.font.SysFont("Serif", 40)
             verdictLabel = verdictFont.render(verdict, True, colors.GOLD)
-            screen.blit(verdictLabel, (BOARD_BEGIN_X + BOARD_END_X / 3, BOARD_BEGIN_Y / 3))
+            screen.blit(verdictLabel, (wc.BOARD_BEGIN_X + wc.BOARD_END_X / 3, wc.BOARD_BEGIN_Y / 3))
 
         self.refreshScores()
         self.refreshStats()
@@ -151,17 +140,17 @@ class GameWindow:
         Refreshes the scoreboard
         """
         if GAME_OVER:
-            scoreBoard_Y = BOARD_BEGIN_Y
+            scoreBoard_Y = wc.BOARD_BEGIN_Y
         else:
             scoreBoard_Y = 120
 
-        pygame.draw.rect(screen, colors.BLACK, (BOARD_LAYOUT_END_X + 9, scoreBoard_Y - 1, 117, 82), 0)
-        player1ScoreSlot = pygame.draw.rect(screen, wc.BOARD_LAYOUT_BACKGROUND,
-                                            (BOARD_LAYOUT_END_X + 10, scoreBoard_Y, 115, 80))
+        pygame.draw.rect(screen, colors.BLACK, (wc.BOARD_FRAME_END_X + 9, scoreBoard_Y - 1, 117, 82), 0)
+        player1ScoreSlot = pygame.draw.rect(screen, wc.BOARD_FRAME_BACKGROUND,
+                                            (wc.BOARD_FRAME_END_X + 10, scoreBoard_Y, 115, 80))
 
-        pygame.draw.rect(screen, colors.BLACK, (BOARD_LAYOUT_END_X + 134, scoreBoard_Y - 1, 117, 82), 0)
-        player2ScoreSlot = pygame.draw.rect(screen, wc.BOARD_LAYOUT_BACKGROUND,
-                                            (BOARD_LAYOUT_END_X + 135, scoreBoard_Y, 115, 80))
+        pygame.draw.rect(screen, colors.BLACK, (wc.BOARD_FRAME_END_X + 134, scoreBoard_Y - 1, 117, 82), 0)
+        player2ScoreSlot = pygame.draw.rect(screen, wc.BOARD_FRAME_BACKGROUND,
+                                            (wc.BOARD_FRAME_END_X + 135, scoreBoard_Y, 115, 80))
 
         scoreFont = pygame.font.SysFont("Sans Serif", 80)
         player1ScoreCounter = scoreFont.render(str(PLAYER_SCORE[PLAYER1]), True, PIECE_COLORS[1])
@@ -191,11 +180,11 @@ class GameWindow:
                 statsPanelY = showStatsButton.y + showStatsButton.height + 5
             pygame.draw.rect(
                 screen, colors.BLACK,
-                (BOARD_LAYOUT_END_X + 9, statsPanelY + 5, wc.WIDTH - BOARD_LAYOUT_END_X - 18, 267 + (370 - statsPanelY)),
+                (wc.BOARD_FRAME_END_X + 9, statsPanelY + 5, wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 18, 267 + (370 - statsPanelY)),
                 0)
             pygame.draw.rect(
                 screen, colors.GREY,
-                (BOARD_LAYOUT_END_X + 10, statsPanelY + 6, wc.WIDTH - BOARD_LAYOUT_END_X - 20, 265 + (370 - statsPanelY)))
+                (wc.BOARD_FRAME_END_X + 10, statsPanelY + 6, wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 20, 265 + (370 - statsPanelY)))
 
     ######   Buttons    ######
 
@@ -212,12 +201,12 @@ class GameWindow:
         homeIcon = pygame.image.load('GUI/home-icon.png').convert_alpha()
         homeIconAccent = pygame.image.load('GUI/home-icon-accent.png').convert_alpha()
 
-        contributorsButton = Button(surface=screen, color=colors.LIGHT_GREY, x=BOARD_LAYOUT_END_X + 10, y=650,
-            width=wc.WIDTH - BOARD_LAYOUT_END_X - 20, height=30, text="Contributors", outline_color=colors.BLACK)
+        contributorsButton = Button(surface=screen, color=colors.LIGHT_GREY, x=wc.BOARD_FRAME_END_X + 10, y=650,
+            width=wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 20, height=30, text="Contributors", outline_color=colors.BLACK)
         contributorsButton.draw()
 
-        settingsButton = Button(surface=screen, color=(82, 82, 82), x=wc.WIDTH - 48, y=BOARD_BEGIN_Y - 38, width=35, height=35)
-        homeButton = Button(surface=screen, color=(79, 79, 79), x=wc.WIDTH - 88, y=BOARD_BEGIN_Y - 38, width=35, height=35)
+        settingsButton = Button(surface=screen, color=(82, 82, 82), x=wc.WINDOW_WIDTH - 48, y=wc.BOARD_BEGIN_Y - 38, width=35, height=35)
+        homeButton = Button(surface=screen, color=(79, 79, 79), x=wc.WINDOW_WIDTH - 88, y=wc.BOARD_BEGIN_Y - 38, width=35, height=35)
         self.reloadSettingsButton(settingsIcon)
         self.reloadHomeButton(homeIcon)
 
@@ -226,7 +215,7 @@ class GameWindow:
             showStatsButton_Y = 330
 
             playAgainButton = Button(
-                surface=screen, color=colors.GOLD, x=BOARD_LAYOUT_END_X + 10, y=BOARD_BEGIN_Y + 100, width=wc.WIDTH - BOARD_LAYOUT_END_X - 20, height=120, text="Play Again")
+                surface=screen, color=colors.GOLD, x=wc.BOARD_FRAME_END_X + 10, y=wc.BOARD_BEGIN_Y + 100, width=wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 20, height=120, text="Play Again")
             playAgainButton.draw()
 
         if GAME_MODE == SINGLE_PLAYER:
@@ -235,8 +224,8 @@ class GameWindow:
             else:
                 statsButtonColor = colors.DARK_GREY
             showStatsButton = Button(
-                surface=screen, color=statsButtonColor, x=BOARD_LAYOUT_END_X + 10, y=showStatsButton_Y, 
-                width=wc.WIDTH - BOARD_LAYOUT_END_X - 20, height=30, text="Observe decision tree", outline_color=colors.BLACK
+                surface=screen, color=statsButtonColor, x=wc.BOARD_FRAME_END_X + 10, y=showStatsButton_Y, 
+                width=wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 20, height=30, text="Observe decision tree", outline_color=colors.BLACK
                 )
             showStatsButton.draw()
 
@@ -272,14 +261,14 @@ class GameWindow:
         """
         Draws the game board on the interface with the latest values in the board list
         """
-        pygame.draw.rect(screen, colors.BLACK, (0, 0, BOARD_LAYOUT_END_X, wc.HEIGHT), 0)
+        pygame.draw.rect(screen, colors.BLACK, (0, 0, wc.BOARD_FRAME_END_X, wc.WINDOW_HEIGHT), 0)
         boardLayout = pygame.draw.rect(
-            screen, wc.BOARD_LAYOUT_BACKGROUND, (0, 0, BOARD_LAYOUT_END_X - 1, wc.HEIGHT))
+            screen, wc.BOARD_FRAME_BACKGROUND, (0, 0, wc.BOARD_FRAME_END_X - 1, wc.WINDOW_HEIGHT))
         apply_gradient_on_rect(surface=screen, left_color=colors.DARKER_GREY, right_color=colors.DARK_GREY, target_rect=boardLayout)
         for c in range(wc.COLUMN_COUNT):
             for r in range(wc.ROW_COUNT):
-                col = BOARD_BEGIN_X + (c * wc.SQUARE_SIZE)
-                row = BOARD_BEGIN_Y + (r * wc.SQUARE_SIZE)
+                col = wc.BOARD_BEGIN_X + (c * wc.SQUARE_SIZE)
+                row = wc.BOARD_BEGIN_Y + (r * wc.SQUARE_SIZE)
                 piece = GAME_BOARD[r][c]
                 pygame.draw.rect(
                     screen, wc.CELL_BORDER_COLOR, (col, row, wc.SQUARE_SIZE, wc.SQUARE_SIZE))
@@ -291,11 +280,11 @@ class GameWindow:
         """
         Hovers the piece over the game board with the corresponding player's piece color
         """
-        boardLayout = pygame.draw.rect(screen, wc.BOARD_LAYOUT_BACKGROUND,
-                                       (0, BOARD_BEGIN_Y - wc.SQUARE_SIZE, BOARD_WIDTH + wc.SQUARE_SIZE / 2, wc.SQUARE_SIZE))
+        boardLayout = pygame.draw.rect(screen, wc.BOARD_FRAME_BACKGROUND,
+                                       (0, wc.BOARD_BEGIN_Y - wc.SQUARE_SIZE, wc.BOARD_WIDTH + wc.SQUARE_SIZE / 2, wc.SQUARE_SIZE))
         apply_gradient_on_rect(surface=screen, left_color=colors.DARKER_GREY, right_color=colors.DARK_GREY, target_rect=boardLayout)
         posx = pygame.mouse.get_pos()[0]
-        if BOARD_BEGIN_X < posx < BOARD_END_X:
+        if wc.BOARD_BEGIN_X < posx < wc.BOARD_END_X:
             pygame.mouse.set_visible(False)
             pygame.draw.circle(screen, PIECE_COLORS[TURN], (posx, int(wc.SQUARE_SIZE / 2)), wc.PIECE_RADIUS)
         else:
@@ -424,11 +413,11 @@ class GameWindow:
                 self.resetEverything()
 
         if DEVMODE:
-            pygame.draw.rect(screen, colors.BLACK, (BOARD_LAYOUT_END_X + 20, 70, wc.WIDTH - BOARD_LAYOUT_END_X - 40, 40))
+            pygame.draw.rect(screen, colors.BLACK, (wc.BOARD_FRAME_END_X + 20, 70, wc.WINDOW_WIDTH - wc.BOARD_FRAME_END_X - 40, 40))
             pygame.mouse.set_visible(True)
             titleFont = pygame.font.SysFont("Sans Serif", 20, False, True)
             coordinates = titleFont.render(str(pygame.mouse.get_pos()), True, colors.WHITE)
-            screen.blit(coordinates, (BOARD_LAYOUT_END_X + 100, 80))
+            screen.blit(coordinates, (wc.BOARD_FRAME_END_X + 100, 80))
 
     def showContributors(self):
         """
@@ -465,7 +454,7 @@ class GameWindow:
                 self.buttonResponseToMouseEvent(event)
 
                 if not GAME_OVER and event.type == pygame.MOUSEBUTTONDOWN:
-                    posx = event.pos[0] - BOARD_BEGIN_X
+                    posx = event.pos[0] - wc.BOARD_BEGIN_X
                     column = self.getBoardColumnFromPos(posx)
 
                     if column is not None:
@@ -511,9 +500,9 @@ class GameWindow:
 
         newC = self.getNewMove(newState=newState, oldState=GAME_BOARD)
 
-        boardLayout = pygame.draw.rect(screen, wc.BOARD_LAYOUT_BACKGROUND,
-                                       (0, BOARD_BEGIN_Y - wc.SQUARE_SIZE, BOARD_WIDTH + wc.SQUARE_SIZE / 2, wc.SQUARE_SIZE))
-        for i in range(BOARD_BEGIN_X, math.ceil(BOARD_BEGIN_X + newC * wc.SQUARE_SIZE + wc.SQUARE_SIZE / 2), 2):
+        boardLayout = pygame.draw.rect(screen, wc.BOARD_FRAME_BACKGROUND,
+                                       (0, wc.BOARD_BEGIN_Y - wc.SQUARE_SIZE, wc.BOARD_WIDTH + wc.SQUARE_SIZE / 2, wc.SQUARE_SIZE))
+        for i in range(wc.BOARD_BEGIN_X, math.ceil(wc.BOARD_BEGIN_X + newC * wc.SQUARE_SIZE + wc.SQUARE_SIZE / 2), 2):
             apply_gradient_on_rect(surface=screen, left_color=colors.DARKER_GREY, right_color=colors.DARK_GREY, target_rect=boardLayout)
             pygame.draw.circle(
                 screen, PIECE_COLORS[TURN], (i, int(wc.SQUARE_SIZE / 2)), wc.PIECE_RADIUS)
@@ -640,15 +629,15 @@ class MainMenu:
     def drawMainMenuButtons(self):
         global singlePlayerButton, multiPlayerButton, SettingsButton_MAINMENU
         singlePlayerButton = Button(
-            surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 3, y=wc.HEIGHT / 3, width=wc.WIDTH / 3, height=wc.HEIGHT / 6,
+            surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 3, y=wc.WINDOW_HEIGHT / 3, width=wc.WINDOW_WIDTH / 3, height=wc.WINDOW_HEIGHT / 6,
             has_gradient_core=True, core_left_color=colors.GREEN, core_right_color=colors.BLUE, text='PLAY AGAINST AI', outline_color=colors.BLACK)
 
         multiPlayerButton = Button(
-            surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 3, y=wc.HEIGHT / 3 + wc.HEIGHT / 5, width=wc.WIDTH / 3, height=wc.HEIGHT / 6,
+            surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 3, y=wc.WINDOW_HEIGHT / 3 + wc.WINDOW_HEIGHT / 5, width=wc.WINDOW_WIDTH / 3, height=wc.WINDOW_HEIGHT / 6,
             has_gradient_core=True, core_left_color=colors.GREEN, core_right_color=colors.BLUE, text='TWO-PLAYERS', outline_color=colors.BLACK)
 
         SettingsButton_MAINMENU = Button(
-            surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 3, y=wc.HEIGHT / 3 + wc.HEIGHT / 2.5, width=wc.WIDTH / 3, height=wc.HEIGHT / 6,
+            surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 3, y=wc.WINDOW_HEIGHT / 3 + wc.WINDOW_HEIGHT / 2.5, width=wc.WINDOW_WIDTH / 3, height=wc.WINDOW_HEIGHT / 6,
             has_gradient_core=True, core_left_color=colors.GREEN, core_right_color=colors.BLUE, text='GAME SETTINGS', outline_color=colors.BLACK)
 
         singlePlayerButton.draw()
@@ -658,7 +647,7 @@ class MainMenu:
     def drawMainMenuLabels(self):
         titleFont = pygame.font.SysFont("Sans Serif", 65, False, True)
         mainLabel = titleFont.render("Welcome to Smart Connect4 :)", True, colors.WHITE)
-        screen.blit(mainLabel, (wc.WIDTH / 5, wc.HEIGHT / 8))
+        screen.blit(mainLabel, (wc.WINDOW_WIDTH / 5, wc.WINDOW_HEIGHT / 8))
 
     def buttonResponseToMouseEvent(self, event):
         """
@@ -759,15 +748,15 @@ class WhoPlaysFirstMenu:
         backIconAccent = pygame.image.load('GUI/back-icon.png').convert_alpha()
         backIcon = pygame.image.load('GUI/back-icon-accent.png').convert_alpha()
 
-        backButton = Button(surface=screen, color=(81, 81, 81), x=wc.WIDTH - 70, y=20, width=52, height=52)
+        backButton = Button(surface=screen, color=(81, 81, 81), x=wc.WINDOW_WIDTH - 70, y=20, width=52, height=52)
         self.reloadBackButton(backIcon)
 
         playerFirstButton = Button(
-            surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 2 - 220, y=wc.HEIGHT / 2, width=200, height=wc.HEIGHT / 6,
+            surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 2 - 220, y=wc.WINDOW_HEIGHT / 2, width=200, height=wc.WINDOW_HEIGHT / 6,
             has_gradient_core=True, core_left_color=colors.GREEN, core_right_color=colors.BLUE, text='HUMAN', outline_color=colors.BLACK)
 
         computerFirstButton = Button(
-            surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 2 + 20, y=wc.HEIGHT / 2, width=200, height=wc.HEIGHT / 6,
+            surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 2 + 20, y=wc.WINDOW_HEIGHT / 2, width=200, height=wc.WINDOW_HEIGHT / 6,
             has_gradient_core=True, core_left_color=colors.GREEN, core_right_color=colors.BLUE, text='COMPUTER', outline_color=colors.BLACK)
 
         playerFirstButton.draw()
@@ -776,7 +765,7 @@ class WhoPlaysFirstMenu:
     def drawWPFLabels(self):
         titleFont = pygame.font.SysFont("Sans Serif", 65, True, True)
         mainLabel = titleFont.render("Who Plays First ?", True, colors.LIGHT_GREY)
-        screen.blit(mainLabel, (wc.WIDTH / 2 - mainLabel.get_width() / 2, wc.HEIGHT / 3 - mainLabel.get_height() / 2))
+        screen.blit(mainLabel, (wc.WINDOW_WIDTH / 2 - mainLabel.get_width() / 2, wc.WINDOW_HEIGHT / 3 - mainLabel.get_height() / 2))
 
     def buttonResponseToMouseEvent(self, event):
         """
@@ -861,7 +850,7 @@ class TreeVisualizer:
         global root, child1, child2, child3, child4, child5, child6, child7
         child1 = child2 = child3 = child4 = child5 = child6 = child7 = None
 
-        parentNodeButton = Button(surface=screen, color=colors.DARK_GREY, x=wc.WIDTH / 2 - 70, y=10, width=140, height=100, 
+        parentNodeButton = Button(surface=screen, color=colors.DARK_GREY, x=wc.WINDOW_WIDTH / 2 - 70, y=10, width=140, height=100, 
                                   text='BACK TO PARENT', shape='ellipse', outline_color=colors.BLACK)
         parentNodeButton.draw()
 
@@ -873,7 +862,7 @@ class TreeVisualizer:
             root = nodeStack[-1]
             rootValue = engine.BOARD.getValueFromMap(root)
 
-        rootNodeButton = Button(surface=screen, color=colors.LIGHT_GREY, x=wc.WIDTH / 2 - 70, y=parentNodeButton.y + 200, width=140,
+        rootNodeButton = Button(surface=screen, color=colors.LIGHT_GREY, x=wc.WINDOW_WIDTH / 2 - 70, y=parentNodeButton.y + 200, width=140,
                                 height=100, text=str(rootValue),
                                 shape='ellipse')
 
@@ -938,8 +927,8 @@ class TreeVisualizer:
         horizontalRule = pygame.draw.rect(screen, colors.WHITE,
                                           (child1Button.x + child1Button.width / 2,
                                            rootNodeButton.y + rootNodeButton.height + 50,
-                                           wc.WIDTH - (child1Button.x + child1Button.width / 2)
-                                           - (wc.WIDTH - (child7Button.x + child7Button.width / 2)), 2))
+                                           wc.WINDOW_WIDTH - (child1Button.x + child1Button.width / 2)
+                                           - (wc.WINDOW_WIDTH - (child7Button.x + child7Button.width / 2)), 2))
         pygame.draw.rect(screen, colors.WHITE, (child2Button.x + child2Button.width / 2, horizontalRule.y, 2, 40))
         pygame.draw.rect(screen, colors.WHITE, (child6Button.x + child6Button.width / 2, horizontalRule.y, 2, 40))
         pygame.draw.rect(screen, colors.WHITE,
@@ -1052,7 +1041,7 @@ class TreeVisualizer:
         backIconAccent = pygame.image.load('GUI/back-icon.png').convert_alpha()
         backIcon = pygame.image.load('GUI/back-icon-accent.png').convert_alpha()
 
-        backButton = Button(surface=screen, color=(81, 81, 81), x=wc.WIDTH - 70, y=20, width=52, height=52)
+        backButton = Button(surface=screen, color=(81, 81, 81), x=wc.WINDOW_WIDTH - 70, y=20, width=52, height=52)
         self.reloadBackButton(backIcon)
 
     def drawTreeVisualizerLabels(self):
@@ -1228,7 +1217,7 @@ class SettingsWindow:
         backIconAccent = pygame.image.load('GUI/back-icon.png').convert_alpha()
         backIcon = pygame.image.load('GUI/back-icon-accent.png').convert_alpha()
 
-        backButton = Button(surface=screen, color=(26, 26, 120), x=wc.WIDTH - 70, y=20, width=52, height=52)
+        backButton = Button(surface=screen, color=(26, 26, 120), x=wc.WINDOW_WIDTH - 70, y=20, width=52, height=52)
         self.reloadBackButton(backIcon)
 
         pruningCheckbox = Button(screen, color=colors.WHITE, x=30, y=320, width=30, height=30, text="", outline_color=colors.WHITE,
@@ -1295,7 +1284,7 @@ class SettingsWindow:
 
         screen.blit(backLabel, (backButton.x + 5, backButton.y + backButton.height + 8))
 
-        screen.blit(mainLabel, (wc.WIDTH / 2 - mainLabel.get_width() / 2, wc.HEIGHT / 8))
+        screen.blit(mainLabel, (wc.WINDOW_WIDTH / 2 - mainLabel.get_width() / 2, wc.WINDOW_HEIGHT / 8))
 
         screen.blit(aiSettingsSubtitle, (20, 250))
         aiSettingsHR = pygame.draw.rect(
@@ -1443,7 +1432,7 @@ def refreshBackground(leftColor=colors.BLACK, rightColor=colors.GREY):
     """
     Refreshes screen background
     """
-    apply_gradient_on_rect(screen, leftColor, rightColor, pygame.draw.rect(screen, wc.SCREEN_BACKGROUND, (0, 0, wc.WIDTH, wc.HEIGHT)))
+    apply_gradient_on_rect(screen, leftColor, rightColor, pygame.draw.rect(screen, wc.SCREEN_BACKGROUND, (0, 0, wc.WINDOW_WIDTH, wc.WINDOW_HEIGHT)))
 
 
 def switchTurn():
